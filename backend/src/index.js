@@ -1,24 +1,49 @@
-const express = require('express')
-const cors = require("cors")
-const app = express()
+const express = require("express");
+const cors = require("cors");
+const app = express();
+const port = 3000;
 
-const port = 3000
+const db = require("./config/db.js");
 
-app.use(cors({origin: 'http://localhost:3001'}))
+app.use(cors({ origin: "http://localhost:3001" }));
+app.use(express.json()); // Enable JSON body parsing
 
-app.get('/', (req, res) => {
-  res.send('Hello World!')
-})
+let posts = [
+  {
+    id: 1,
+    blogName: "Arya Global Blogs",
+    blogDate: "11/10/2024",
+    blogDesc:
+      "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
+  },
+];
 
-app.get("/post",(req,res)=>{
-    res.json([{
-        blogName:"Arya Global Blogs",
-        blogDate:"11/10/2024",
-        blogDesc:"Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum."
-    }])
-})
+// GET posts
+app.get("/post", async (req, res) => {
+  const posts = await db.query("SELECT * FROM blog");
+
+  res.json({
+    status: "success",
+    result: posts.rows,
+  });
+});
+
+// POST new post
+app.post("/post", async (req, res) => {
+  const { name, desc, date } = req.body;
+  console.log("date", date, "typeof dat", typeof parseInt(date) );
+
+  const result = await db.query(
+    "INSERT INTO blog(blogID, blogName, blogDesc, blogDate) VALUES ($1, $2, $3, $4) RETURNING *",
+    [Math.floor(Math.random() * 1000000000) + 1, name, desc, parseInt(date)]
+  );
+
+  res.json({
+    status: "success",
+    result: result.rows,
+  });
+});
 
 app.listen(port, () => {
-  console.log(`Example app listening on port ${port}`)
-})
-
+  console.log(`Example app listening on port ${port}`);
+});
