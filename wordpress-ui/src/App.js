@@ -8,7 +8,7 @@ import CreatePost from "./pages/CreatePost"; // Import CreatePost component
 function App() {
   return (
     <Router>
-      <div className="flex">
+      <div className="flex xl:pt-0 pt-10 md:pt-0">
         <Sidebar />
         <div className="flex-1 xl:p-4 lg:p-4 md:p-4 p-2">
           <Routes>
