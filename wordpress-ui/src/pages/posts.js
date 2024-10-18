@@ -19,8 +19,13 @@ const Posts = () => {
     navigate('/create-post');
   };
 
-  const handleEditPost = (id) => {
-    navigate(`/edit-post/${id}`);
+  const handleEditPost = (data) => {
+    navigate('/create-post',{ 
+      state: {
+        blogData: data
+      }}
+    );
+    
   };
 
   const handleDeletePost = (id) => {
@@ -55,7 +60,7 @@ const Posts = () => {
                 <td className="border border-gray-200 p-2">{post.blogdesc}</td>
                 <td className="border border-gray-200 p-2">{post.blogdate}</td>
                 <td className="border border-gray-200 p-2 flex space-x-2">
-                  <button onClick={() => handleEditPost(post.id)}>
+                  <button onClick={() => handleEditPost(post)}>
                     <FaEdit className="text-blue-500 hover:text-blue-700" />
                   </button>
                   <button onClick={() => handleDeletePost(post.id)}>

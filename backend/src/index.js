@@ -44,6 +44,30 @@ app.post("/post", async (req, res) => {
   });
 });
 
+app.post("/editBlog", async (req, res) => {
+  const { blogname, blogdesc, blogdate, blogid } = req.body;
+  const result = await db.query(
+    // "UPDATE blog SET blogName = $1, blogDesc= $2 ,blogDate = $3 WHERE blogID = $4;",
+    "UPDATE blog SET blogName = $1, blogDesc= $2 ,blogDate = $3 WHERE blogID = $4 RETURNING *;",
+    [req.body.blogname, req.body.blogdesc, parseInt(req.body.blogdate), req.body.blogid]
+  );
+
+  res.json({
+    status: "success",
+    result: result.rows,
+  });
+});
+
+app.post("/deleteBlog", async (req, res) => {
+  const { id } = req.body;
+  const result = await db.query("DELETE FROM blog WHERE blogId=$1;"[id]);
+
+  res.json({
+    result: "success",
+    result: result.rows,
+  });
+});
+
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
 });
